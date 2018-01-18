@@ -81,7 +81,7 @@ public class MMUser implements Serializable {
 		if(!userDirectory.exists()) {
 			userDirectory.mkdirs();
 		}
-		File userFilePath = new File(MMUser.userPath + File.pathSeparator + getUserName() + ".mmu");
+		File userFilePath = new File(MMUser.userPath + '/' + getUserName() + ".mmu");
 		if(userFilePath.exists()) throw new UserAlreadyExistsException(getUserName());
 		try {
 			userFilePath.createNewFile();
@@ -226,8 +226,9 @@ public class MMUser implements Serializable {
 	 * Saves this user
 	 */
 	public void save() {
-		File savePath = new File(MMUser.userPath + File.pathSeparator + getUserName() + ".mmu");
+		File savePath = new File(MMUser.userPath + "/" + getUserName() + ".mmu");
 		try {
+			if(!savePath.exists()) savePath.createNewFile();
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(savePath));
 			oos.writeObject(this);
 			oos.close();
@@ -242,7 +243,7 @@ public class MMUser implements Serializable {
 	 * @return The user, if it exists
 	 */
 	public static MMUser loadUser(String name) {
-		File savePath = new File(MMUser.userPath + File.pathSeparator + name + ".mmu");
+		File savePath = new File(MMUser.userPath + "/" + name + ".mmu");
 		try {
 			ObjectInputStream oos = new ObjectInputStream(new FileInputStream(savePath));
 			MMUser u = (MMUser)oos.readObject();

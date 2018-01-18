@@ -33,7 +33,7 @@ public class FixedValueExpense implements Expense {
 	}
 
 	@Override
-	public double getOccuranceCost() {
+	public double getOccurrenceCost() {
 		return totalCost/totalOccuranceCount;
 	}
 
@@ -59,7 +59,7 @@ public class FixedValueExpense implements Expense {
 
 	@Override
 	public double getAmountPaid() {
-		return balance%getOccuranceCost();
+		return balance%getOccurrenceCost();
 	}
 
 	@Override
@@ -68,8 +68,8 @@ public class FixedValueExpense implements Expense {
 	}
 
 	@Override
-	public double getRemainingOccuranceValue() {
-		return getOccuranceCost()-getAmountPaid();
+	public double getRemainingOccurrenceValue() {
+		return getOccurrenceCost()-getAmountPaid();
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class FixedValueExpense implements Expense {
 	
 	@Override
 	public String toString() {
-		return "[Expense: {" + getName() + "} " + NumberFormat.getCurrencyInstance(Locale.US).format(getTotalCost()) + "]";
+		return "[Expense: {" + getName() + "} " + NumberFormat.getCurrencyInstance(Locale.US).format(getTotalCost()) + " (per Occurrence: " + NumberFormat.getCurrencyInstance(Locale.US).format(getOccurrenceCost())+ ") (remaining: " + NumberFormat.getCurrencyInstance(Locale.US).format(getTotalRemainingPayValue()) + ")]";
 	}
 
 }

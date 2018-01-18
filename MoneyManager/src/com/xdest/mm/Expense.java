@@ -11,7 +11,7 @@ public interface Expense extends Depositable {
 	 * Get the total cost for a single occurrence of this Expense
 	 * @return The cost of a single occurrence as a double
 	 */
-	double getOccuranceCost();
+	double getOccurrenceCost();
 	
 	/**
 	 * Get the total cost for all occurrences.
@@ -56,7 +56,7 @@ public interface Expense extends Depositable {
 	 * Get the amount of money required to completely pay off this expense occurrence.
 	 * @return The amount of money required to pay off this expense occurrence
 	 */
-	double getRemainingOccuranceValue();
+	double getRemainingOccurrenceValue();
 	
 	/**
 	 * Get the total remaining money through all occurrences of this expense left to pay.

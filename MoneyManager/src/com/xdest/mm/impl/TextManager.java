@@ -191,7 +191,7 @@ public class TextManager implements Manager {
 					if(e.getTotalCost() != -1) {
 						owed+=e.getTotalCost();
 					} else {
-						recurred+=e.getOccuranceCost();
+						recurred+=e.getOccurrenceCost();
 					}
 					expenses++;
 				}
@@ -315,6 +315,7 @@ public class TextManager implements Manager {
 				+ "5. List automations\n"
 				+ "6. List summary of accounts\n"
 				+ "7. Manage an account\n"
+				+ "8. Initiate a transfer\n"
 				+ "\\e. Quit");
 	}
 	
