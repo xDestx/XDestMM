@@ -21,9 +21,8 @@ public class DefaultAutomation implements Automation {
 	 */
 	private static final long serialVersionUID = -7087021731230233898L;
 	
-	private final Account source, destination;
+	
 	private long intervalInMinutes;
-	private double amount;
 	private Date nextTransferDate;
 	
 	/**
