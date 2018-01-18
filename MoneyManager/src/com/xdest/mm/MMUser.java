@@ -1,13 +1,21 @@
 package com.xdest.mm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.xdest.mm.exception.UserAlreadyExistsException;
+
 /**
- * MM User class. Constructor is hidden to prevent users without accounts. Used to check funds / set goals / projects / use the entire management system.
+ * MM User class. Used to check funds / set goals / projects / use the entire management system.
  * @author xDest
  *
  */
@@ -17,42 +25,77 @@ public class MMUser implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 7856785047936908648L;
+	private static final String userPath = System.getProperty("user.home") + "/" + "XDMM" + "/" + "local" + "/" + "users";
+	
 	private Set<Account> userAccounts;
 	private String email;
+	private String name;
 	private List<Expense> expenses;
 	private List<Automation> automations;
 	
 	/**
-	 * Unused constructor
+	 * Default Constructor
+	 * @param name The users name
 	 */
-	private MMUser() {
-		userAccounts = null;
-		expenses = null;
-		email = null;
+	public MMUser(String name) throws UserAlreadyExistsException {
+		this.name = name;
+		this.email = null;
+		userAccounts = new HashSet<Account>();
+		expenses = new ArrayList<Expense>();
+		automations = new ArrayList<Automation>();
+		checkExists();
 	}
 	
 	/**
-	 * Default constructor
+	 * Re?constructor
+	 * @param name The name of the user
 	 * @param a The accounts for this user
 	 */
-	private MMUser(Account...a) {
+	public MMUser(String name, Account...a) throws UserAlreadyExistsException {
 		this.userAccounts = new HashSet<Account>();
 		for(Account acc : a) {
 			this.userAccounts.add(acc);
 		}
 		expenses = new ArrayList<Expense>();
 		automations = new ArrayList<Automation>();
+		this.name = name;
+		checkExists();
 	}
 	
 	/**
-	 * Default constructor
+	 * Re?constructor
+	 * @param name The name of the user
 	 * @param a The account for this user
 	 */
-	private MMUser(Account a) {
+	public MMUser(String name, Account a) throws UserAlreadyExistsException {
 		this.userAccounts = new HashSet<Account>();
 		this.userAccounts.add(a);
 		expenses = new ArrayList<Expense>();
 		automations = new ArrayList<Automation>();
+		this.name = name;
+		checkExists();
+	}
+	
+	public void checkExists() throws UserAlreadyExistsException {
+		File userDirectory = new File(MMUser.userPath);
+		if(!userDirectory.exists()) {
+			userDirectory.mkdirs();
+		}
+		File userFilePath = new File(MMUser.userPath + File.pathSeparator + getUserName() + ".mmu");
+		if(userFilePath.exists()) throw new UserAlreadyExistsException(getUserName());
+		try {
+			userFilePath.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Get the name of this user
+	 * @return The users name
+	 */
+	public String getUserName() {
+		return this.name;
 	}
 	
 	/**
@@ -177,6 +220,40 @@ public class MMUser implements Serializable {
 	 */
 	public List<Automation> getAutomations() {
 		return this.automations;
+	}
+	
+	/**
+	 * Saves this user
+	 */
+	public void save() {
+		File savePath = new File(MMUser.userPath + File.pathSeparator + getUserName() + ".mmu");
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(savePath));
+			oos.writeObject(this);
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Load and return a user if it exists
+	 * @param name The name of the user
+	 * @return The user, if it exists
+	 */
+	public static MMUser loadUser(String name) {
+		File savePath = new File(MMUser.userPath + File.pathSeparator + name + ".mmu");
+		try {
+			ObjectInputStream oos = new ObjectInputStream(new FileInputStream(savePath));
+			MMUser u = (MMUser)oos.readObject();
+			oos.close();
+			return u;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

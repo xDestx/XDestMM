@@ -7,6 +7,13 @@ package com.xdest.mm;
  */
 public interface Account extends Depositable, Withdrawlable {
 
+	
+	/**
+	 * Get the name of this account.
+	 * <br/><strong>Note:</strong> This is not the name of the account owner, but rather solely the account's name itself.
+	 * @return The name of this account
+	 */
+	String getAccountName();
 	/**
 	 * Get the name of the account owner
 	 * @return The name of the account owner

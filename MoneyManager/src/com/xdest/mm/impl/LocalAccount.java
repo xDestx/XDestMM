@@ -1,10 +1,13 @@
 package com.xdest.mm.impl;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import com.xdest.mm.Account;
 import com.xdest.mm.exception.InsufficientFundsException;
 
 /**
- * An account tied to nothing but a file on this machine
+ * An account tied to nothing but the {@link com.xdest.mm.MMUser MMUser}
  * @author xDest
  *
  */
@@ -15,77 +18,112 @@ public class LocalAccount implements Account {
 	 */
 	private static final long serialVersionUID = 9155192774205968483L;
 	
-	private String accountName;
 	
+	private String accountName, ownerName;
+
 	
-	
-	//TODO: This entire implementation
-	
+	private double balance;
 	
 	/**
 	 * Create an account with the given name	
-	 * @param name
+	 * @param ownerName The name of the owner of this account
+	 * @param accountName The name of this account
 	 */
-	public LocalAccount(String name) {
-		this.accountName = name;
+	public LocalAccount(String ownerName, String accountName) {
+		this.accountName = accountName;
+		this.ownerName = ownerName;
+		balance = 0;
 	}
 
 	@Override
 	public double deposit(double d) {
-		// TODO Auto-generated method stub
+		balance+=d;
 		return 0;
 	}
 
 	@Override
 	public double withdraw(double amt) throws InsufficientFundsException {
-		// TODO Auto-generated method stub
-		return 0;
+		if(balance-amt < 0) {
+			throw new InsufficientFundsException(this, balance-amt, balance);
+		} else {
+			balance-=amt;
+			return amt;
+		}
 	}
 
 	@Override
 	public String getAccountOwner() {
-		return accountName;
+		return ownerName;
 	}
 
-	@Override
+	/**
+	 * The identifier used to load or save this account.
+	 * @return The identifier as a String
+	 */
+	public String getLocalAccountIdentifier() {
+		return this.getAccountOwner() + "." + this.getAccountName();
+	}
+	
+	/**
+	 * Unused for Local Accounts.
+	 * @see #getAccountName()
+	 * @see #getLocalAccountIdentifier
+	 */
+	@Override @Deprecated
 	public long getRoutingNumber() {
 		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
 
-	@Override
+	/**
+	 * Unused for Local Accounts.
+	 * @see #getAccountName();
+	 * @see #getLocalAccountIdentifier();
+	 */
+	@Override @Deprecated
 	public long getAccountNumber() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
+	/**
+	 * Unused for local accounts
+	 * @see #getLocalAccountIdentifier()
+	 */
+	@Override @Deprecated
 	public String getRoutingNumberAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
-	@Override
+	/**
+	 * Unused for local accounts
+	 * @see #getLocalAccountIdentifier();
+	 */
+	@Override @Deprecated
 	public String getAccountNumberAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override
 	public double getBalance() {
-		// TODO Auto-generated method stub
-		return 0;
+		return balance;
 	}
 
 	@Override
 	public String getFormattedBalance() {
-		// TODO Auto-generated method stub
-		return null;
+		NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.US);
+		return (balance < 0 ? "-":"") + nf.format(Math.abs(balance));
 	}
 	
 	@Override
 	public String toString() {
-		return null;
+		return "[Account: {" + this.getLocalAccountIdentifier() + "} " + getFormattedBalance() + "]";
 	}
 
+	@Override
+	public String getAccountName() {
+		return accountName;
+	}
+
+	
 }

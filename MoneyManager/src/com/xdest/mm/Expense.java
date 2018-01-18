@@ -80,4 +80,5 @@ public interface Expense extends Depositable {
 	double deposit(double amountPaid);
 	
 	
+	
 }
