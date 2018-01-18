@@ -280,6 +280,28 @@ public class TextManager implements Manager {
 				
 				//TODO: Transfer...Select a destination (Expense or another account for now)...choose amount..move c4$h...fin
 				
+				Depositable destination = selectDepositable(s);
+				
+				double amountToTransfer = -1;
+				
+				while(amountToTransfer == -1) {
+					try {
+						String amt = "";
+						System.out.println("Enter amount to transfer (Omit currency signs): ");
+						amt = s.nextLine();
+						amountToTransfer = Double.parseDouble(amt);
+					} catch (Exception e) {
+						amountToTransfer = -1;
+						System.out.println("Invalid, try again");
+					}
+				}
+				try {
+					source.deposit(destination.deposit(source.withdraw(amountToTransfer)));
+					//This part wouldn't work if source was only withdrawable
+				} catch (InsufficientFundsException e) {
+					System.out.println("Sorry, there weren't enough funds in your account.");
+				}
+				
 			} else if (input.equalsIgnoreCase("\\e")) {
 				System.out.println("au revoir chico");
 				user.save();
@@ -316,6 +338,39 @@ public class TextManager implements Manager {
 		
 		Account selectedAccount = accounts[accountNum];
 		return selectedAccount;
+	}
+	
+	private Depositable selectDepositable(Scanner s) {
+		Depositable[] ds = new Depositable[user.getAccounts().size() + user.getExpenses().size()];
+		int i = 0;
+		for(Account a : user.getAccounts()) {
+			ds[i] = a;
+			i++;
+		}
+		for(Expense e : user.getExpenses()) {
+			ds[i] = e;
+			i++;
+		}
+		String accs = "";
+		for(int k = 0; k < ds.length; k++) {
+			accs+=k+". " + ds[k] + "\n";
+		}
+		System.out.println("Select a depositable location by number:\n"+accs);
+		
+		
+		int selectedNum = -1;
+		while(selectedNum == -1) {
+			try {
+				selectedNum = Integer.parseInt(s.nextLine());
+				if(selectedNum >= ds.length || selectedNum < 0)
+					selectedNum = -1;
+			} catch (Exception e) {
+				selectedNum = -1;
+			}
+		}
+		
+		Depositable selected = ds[selectedNum];
+		return selected;
 	}
 	
 	private void displayOptions() {
