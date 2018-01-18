@@ -213,31 +213,7 @@ public class TextManager implements Manager {
 				String secondaryInput = "";
 				
 
-				Account[] accounts = new Account[user.getAccounts().size()];
-				int i = 0;
-				for(Account a : user.getAccounts()) {
-					accounts[i] = a;
-					i++;
-				}
-				String accs = "";
-				for(int k = 0; k < accounts.length; k++) {
-					accs+=k+". " + accounts[k].getAccountName() + "\n";
-				}
-				System.out.println("Select an account by number:\n"+accs);
-				
-				
-				int accountNum = -1;
-				while(accountNum == -1) {
-					try {
-						accountNum = Integer.parseInt(s.nextLine());
-						if(accountNum >= accounts.length || accountNum < 0)
-							accountNum = -1;
-					} catch (Exception e) {
-						accountNum = -1;
-					}
-				}
-				
-				Account selectedAccount = accounts[accountNum];
+				Account selectedAccount = userSelectAccount(s);
 				
 				
 				System.out.println("\nSelect another option: \n"
@@ -296,6 +272,14 @@ public class TextManager implements Manager {
 						actionComplete = false;
 					}
 				}
+			} else if (input.equalsIgnoreCase("8")) {
+				//Initiate transfer
+				System.out.println("Initiate a transfer\n\nSelect an source--\n");
+				Account source = userSelectAccount(s);
+				System.out.println("\nSelect a destination: " );
+				
+				//TODO: Transfer...Select a destination (Expense or another account for now)...choose amount..move c4$h...fin
+				
 			} else if (input.equalsIgnoreCase("\\e")) {
 				System.out.println("au revoir chico");
 				user.save();
@@ -303,6 +287,35 @@ public class TextManager implements Manager {
 				System.out.println("これは何ですか。ww");
 			}
 		}
+	}
+	
+	private Account userSelectAccount(Scanner s) {
+		Account[] accounts = new Account[user.getAccounts().size()];
+		int i = 0;
+		for(Account a : user.getAccounts()) {
+			accounts[i] = a;
+			i++;
+		}
+		String accs = "";
+		for(int k = 0; k < accounts.length; k++) {
+			accs+=k+". " + accounts[k].getAccountName() + "\n";
+		}
+		System.out.println("Select an account by number:\n"+accs);
+		
+		
+		int accountNum = -1;
+		while(accountNum == -1) {
+			try {
+				accountNum = Integer.parseInt(s.nextLine());
+				if(accountNum >= accounts.length || accountNum < 0)
+					accountNum = -1;
+			} catch (Exception e) {
+				accountNum = -1;
+			}
+		}
+		
+		Account selectedAccount = accounts[accountNum];
+		return selectedAccount;
 	}
 	
 	private void displayOptions() {
