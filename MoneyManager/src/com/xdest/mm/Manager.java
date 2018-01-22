@@ -25,7 +25,16 @@ public interface Manager {
 	 * @param The amount to transfer 
 	 * @return The automation, or null
 	 */
-	Automation createAutomation(Withdrawlable source, Depositable destination, long interval, double amount);
+	ScheduledAutomation createScheduledAutomation(Withdrawlable source, Depositable destination, long interval, double amount);
+	
+	/**
+	 * Attempt to create an automation from the source to the destination
+	 * @param source The source 
+	 * @param destination The destination
+	 * @param amount The amount to transfer per transfer
+	 * @return The automation instance
+	 */
+	Automation createAutomation(Withdrawlable source, Depositable destination, double amount);
 	
 	/**
 	 * Create a local account not linked to anywhere but this machine
