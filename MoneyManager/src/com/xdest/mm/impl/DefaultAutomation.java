@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.xdest.mm.Account;
-import com.xdest.mm.Automation;
+import com.xdest.mm.ScheduledAutomation;
 import com.xdest.mm.exception.InsufficientFundsException;
 
 /**
@@ -12,7 +12,7 @@ import com.xdest.mm.exception.InsufficientFundsException;
  * @author xDest
  *
  */
-public class DefaultAutomation implements Automation {
+public class DefaultAutomation extends BasicAutomation implements ScheduledAutomation {
 
 	
 	
@@ -33,9 +33,7 @@ public class DefaultAutomation implements Automation {
 	 * @param amount The amount to transfer
 	 */
 	public DefaultAutomation(Account source, Account destination, long interval, double amount) {
-		this.source = source;
-		this.destination = destination;
-		this.amount = amount;
+		super(source,destination,amount);
 		nextTransferDate = Calendar.getInstance().getTime();
 		this.intervalInMinutes = interval;
 		this.doScheduleNext();
@@ -47,7 +45,7 @@ public class DefaultAutomation implements Automation {
 	 */
 	@Override
 	public Account getDestination() {
-		return destination;
+		return (Account)destination;
 	}
 
 	/**
@@ -55,7 +53,7 @@ public class DefaultAutomation implements Automation {
 	 */
 	@Override
 	public Account getSource() {
-		return source;
+		return (Account)source;
 	}
 
 	@Override
@@ -69,7 +67,7 @@ public class DefaultAutomation implements Automation {
 			return false;
 		}
 		double leftover = destination.deposit(withdrawn);
-		source.deposit(leftover);
+		((Account)source).deposit(leftover);
 		doScheduleNext();
 		return true;
 	}

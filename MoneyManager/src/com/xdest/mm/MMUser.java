@@ -181,10 +181,12 @@ public class MMUser implements Serializable {
 	/**
 	 * Run any automations which can be run
 	 */
-	public void checkAutomations() {
+	public void checkScheduledAutomations() {
 		for(Automation a : this.automations) {
-			if(a.ready()) {
-				a.doTask();
+			if(a instanceof ScheduledAutomation) {
+				if(((ScheduledAutomation)a).ready()) {
+					a.doTask();
+				}
 			}
 		}
 	}
